@@ -7,10 +7,6 @@ node {
         ])
     ])
 
-    stage('Clone Repository') {
-        git 'https://github.com/Snehasingh-003/jenkins-pipeline-demo.git'
-    }
-
     stage('Build') {
         echo "Compiling Java file..."
         bat 'javac Test.java'
