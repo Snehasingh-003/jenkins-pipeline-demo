@@ -1,34 +1,30 @@
-pipeline {
-    agent any
+node {
 
-    triggers {
-        pollSCM('H/2 * * * *')
+    properties([
+        pipelineTriggers([
+            cron('H/5 * * * *'),
+            pollSCM('H/2 * * * *')
+        ])
+    ])
+
+    stage('Clone Repository') {
+        git 'https://github.com/Snehasingh-003/jenkins-pipeline-demo.git'
     }
 
-    stages {
+    stage('Build') {
+        echo "Compiling Java file..."
+        bat 'javac Test.java'
+    }
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/Snehasingh-003/jenkins-pipeline-demo.git'
-            }
-        }
+    stage('Run Program') {
+        bat 'java Test > output_scripted.txt'
+    }
 
-        stage('Build') {
-            steps {
-                bat 'javac Test.java'
-            }
-        }
+    stage('Echo Build Status') {
+        echo "Scripted Pipeline Build Completed!"
+    }
 
-        stage('Run Program') {
-            steps {
-                bat 'java Test > output.txt'
-            }
-        }
-
-        stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'output.txt', fingerprint: true
-            }
-        }
+    stage('Archive Artifacts') {
+        archiveArtifacts artifacts: 'output_scripted.txt', fingerprint: true
     }
 }
