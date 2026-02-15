@@ -7,20 +7,20 @@ node {
         ])
     ])
 
-    stage('Build') {
-        echo "Compiling Java file..."
-        bat 'javac Test.java'
+    stage('Clone Repository') {
+        git 'https://github.com/Snehasingh-003/jenkins-pipeline-demo.git'
     }
 
-    stage('Run Program') {
-        bat 'java Test > output_scripted.txt'
+    stage('Build') {
+        echo "Building the project..."
+        sh 'echo "Scripted build executed" > scripted-build.txt'
     }
 
     stage('Echo Build Status') {
-        echo "Scripted Pipeline Build Completed!"
+        echo "Build finished successfully!"
     }
 
     stage('Archive Artifacts') {
-        archiveArtifacts artifacts: 'output_scripted.txt', fingerprint: true
+        archiveArtifacts artifacts: 'scripted-build.txt', fingerprint: true
     }
 }
