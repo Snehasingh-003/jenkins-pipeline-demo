@@ -2,33 +2,42 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('H/2 * * * *')
+        cron('H/2 * * * *')
+        pollSCM('H/1 * * * *')
     }
 
     stages {
 
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/Snehasingh-003/jenkins-pipeline-demo.git'
+                echo "Repository cloned automatically by Jenkins."
             }
         }
 
         stage('Build') {
             steps {
+                echo "Compiling Java file..."
                 bat 'javac Test.java'
+                bat 'echo Build Successful > build.txt'
             }
         }
 
-        stage('Run Program') {
+        stage('Echo Build Status') {
             steps {
-                bat 'java Test > output.txt'
+                echo "Build Completed Successfully!"
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: 'output.txt', fingerprint: true
+                archiveArtifacts artifacts: 'build.txt', fingerprint: true
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline Execution Finished."
         }
     }
 }
